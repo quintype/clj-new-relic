@@ -13,6 +13,13 @@
   (run4 [arg1 arg2 arg3 arg4])
   (run_more [arg1 arg2 arg3 arg4 more]))
 
+(defonce error-message-printed (atom false))
+(core/defn print-error-message []
+  (when-not @error-message-printed
+    (reset! error-message-printed true)
+    (binding [*out* *err*]
+      (println "[CLJ-NEW-RELIC] Cannot Find com.newrelic.api.agent.Trace. Please add newrelic to project.clj to get clojure traces."))))
+
 (defmacro deftraced [name args]
   (if (reflect/resolve-class (.getContextClassLoader (Thread/currentThread))
                              'com.newrelic.api.agent.Trace)
@@ -25,8 +32,7 @@
        (^{com.newrelic.api.agent.Trace ~args} run4 [_ arg1# arg2# arg3# arg4#] (f# arg1# arg2# arg3# arg4#))
        (^{com.newrelic.api.agent.Trace ~args} run_more [_ arg1# arg2# arg3# arg4# more#] (apply f# arg1# arg2# arg3# arg4# more#)))
     (do
-      (binding [*out* *err*]
-        (println "[CLJ-NEW-RELIC] Cannot Find com.newrelic.api.agent.Trace. Please add newrelic to project.clj to get clojure traces."))
+      (print-error-message)
       `(deftype ~name [f#]
          ITraced
          (run0 [_] (f#))
