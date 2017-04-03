@@ -19,7 +19,7 @@
     (binding [*out* *err*]
       (println "WARNING: [CLJ-NEW-RELIC] Cannot Find com.newrelic.api.agent.Trace. Please add newrelic to project.clj to get clojure traces."))))
 
-(defn class-exists? [class-sym]
+(core/defn class-exists? [class-sym]
   (try
     (resolve class-sym)
     true
