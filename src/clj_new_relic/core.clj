@@ -1,6 +1,5 @@
 (ns clj-new-relic.core
-  (:require [clojure.core :as core]
-            [clojure.reflect :as reflect])
+  (:require [clojure.core :as core])
   (:refer-clojure :exclude [defn]))
 
 (set! *warn-on-reflection* true)
@@ -18,11 +17,17 @@
   (when-not @error-message-printed
     (reset! error-message-printed true)
     (binding [*out* *err*]
-      (println "[CLJ-NEW-RELIC] Cannot Find com.newrelic.api.agent.Trace. Please add newrelic to project.clj to get clojure traces."))))
+      (println "WARNING: [CLJ-NEW-RELIC] Cannot Find com.newrelic.api.agent.Trace. Please add newrelic to project.clj to get clojure traces."))))
+
+(defn class-exists? [class-sym]
+  (try
+    (resolve class-sym)
+    true
+    (catch ClassNotFoundException e
+      false)))
 
 (defmacro deftraced [name args]
-  (if (reflect/resolve-class (.getContextClassLoader (Thread/currentThread))
-                             'com.newrelic.api.agent.Trace)
+  (if (class-exists? 'com.newrelic.api.agent.Trace)
     `(deftype ~name [f#]
        ITraced
        (^{com.newrelic.api.agent.Trace ~args} run0 [_] (f#))
