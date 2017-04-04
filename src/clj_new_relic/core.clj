@@ -41,7 +41,7 @@
 (defmacro defn-traced [sym & args]
   (let [clazz-name (-> sym munge (str "_traced") symbol)]
     `(do
-       (define-traced-class ~clazz-name ~(assoc (-> sym meta :newrelic) :metricName (str *ns* \/ sym)))
+       (define-traced-class ~clazz-name ~(assoc (-> sym meta :newrelic) :metricName (str "Clojure/" *ns* \/ sym)))
        (let [inner-function# (fn ~sym ~@args)
              traced# (new ~clazz-name inner-function#)]
          (defn ~sym

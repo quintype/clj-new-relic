@@ -1,4 +1,4 @@
-(defproject clj-new-relic "0.5.0"
+(defproject clj-new-relic "1.0.0"
   :description "Tools for annotating clojure functions with new relic"
   :url "http://github.com/quintype/clj-new-relic"
   :license {:name "Eclipse Public License"
