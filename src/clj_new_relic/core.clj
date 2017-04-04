@@ -51,3 +51,6 @@
            ([arg1# arg2# arg3#] (.invoke traced# arg1# arg2# arg3#))
            ([arg1# arg2# arg3# arg4#] (.invoke traced# arg1# arg2# arg3# arg4#))
            ([arg1# arg2# arg3# arg4# & more#] (.invoke traced# arg1# arg2# arg3# arg4# more#)))))))
+
+(defmacro defn-traced- [sym & args]
+  `(defn-traced ~(vary-meta sym assoc :private true) ~@args))

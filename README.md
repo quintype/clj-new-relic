@@ -28,6 +28,8 @@ You can also pass in any options the tracer accepts, such as
   (prn x))
 ```
 
+You can also annotate a private method with `defn-traced-`
+
 ## Using the newrelic agent
 
 This library automatically checks for the newrelic classes at runtime. Hense, you may add new relic via the agent, and not include the dependency above
