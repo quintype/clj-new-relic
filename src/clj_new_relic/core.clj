@@ -41,8 +41,7 @@
 (defmacro defn-traced [sym & args]
   (let [clazz-name (-> sym munge (str "_traced") symbol)]
     `(do
-       (define-traced-class ~clazz-name {:metricName ~(str *ns* \/ sym)
-                                         :dispatcher true})
+       (define-traced-class ~clazz-name {:metricName ~(str *ns* \/ sym)})
        (let [inner-function# (fn ~sym ~@args)
              traced# (new ~clazz-name inner-function#)]
          (defn ~sym
