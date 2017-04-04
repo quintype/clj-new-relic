@@ -24,32 +24,25 @@
     (catch ClassNotFoundException e
       false)))
 
-(defmacro deftraced [name args]
-  (if (class-exists? 'com.newrelic.api.agent.Trace)
+(defmacro define-traced-class [name args]
+  (let [invoke (if (class-exists? 'com.newrelic.api.agent.Trace)
+                 (with-meta 'invoke {'com.newrelic.api.agent.Trace args})
+                 (do (print-error-message)
+                     'invoke))]
     `(deftype ~name [f#]
        ITraced
-       (^{com.newrelic.api.agent.Trace ~args} invoke [_] (f#))
-       (^{com.newrelic.api.agent.Trace ~args} invoke [_ arg1#] (f# arg1#))
-       (^{com.newrelic.api.agent.Trace ~args} invoke [_ arg1# arg2#] (f# arg1# arg2#))
-       (^{com.newrelic.api.agent.Trace ~args} invoke [_ arg1# arg2# arg3#] (f# arg1# arg2# arg3#))
-       (^{com.newrelic.api.agent.Trace ~args} invoke [_ arg1# arg2# arg3# arg4#] (f# arg1# arg2# arg3# arg4#))
-       (^{com.newrelic.api.agent.Trace ~args} invoke [_ arg1# arg2# arg3# arg4# more#] (apply f# arg1# arg2# arg3# arg4# more#)))
-    (do
-      (print-error-message)
-      `(deftype ~name [f#]
-         ITraced
-         (invoke [_] (f#))
-         (invoke [_ arg1#] (f# arg1#))
-         (invoke [_ arg1# arg2#] (f# arg1# arg2#))
-         (invoke [_ arg1# arg2# arg3#] (f# arg1# arg2# arg3#))
-         (invoke [_ arg1# arg2# arg3# arg4#] (f# arg1# arg2# arg3# arg4#))
-         (invoke [_ arg1# arg2# arg3# arg4# more#] (apply f# arg1# arg2# arg3# arg4# more#))))))
+       (~invoke [_] (f#))
+       (~invoke [_ arg1#] (f# arg1#))
+       (~invoke [_ arg1# arg2#] (f# arg1# arg2#))
+       (~invoke [_ arg1# arg2# arg3#] (f# arg1# arg2# arg3#))
+       (~invoke [_ arg1# arg2# arg3# arg4#] (f# arg1# arg2# arg3# arg4#))
+       (~invoke [_ arg1# arg2# arg3# arg4# more#] (apply f# arg1# arg2# arg3# arg4# more#)))))
 
 (defmacro defn-traced [sym & args]
   (let [clazz-name (-> sym munge (str "_traced") symbol)]
     `(do
-       (deftraced ~clazz-name {:metricName ~(str *ns* \/ sym)
-                               :dispatcher true})
+       (define-traced-class ~clazz-name {:metricName ~(str *ns* \/ sym)
+                                         :dispatcher true})
        (let [inner-function# (fn ~sym ~@args)
              traced# (new ~clazz-name inner-function#)]
          (defn ~sym
