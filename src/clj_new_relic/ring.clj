@@ -6,7 +6,7 @@
     (core/notice-error e)
     (catch Throwable e)))
 
-(defn with-new-relic [handler error-handler]
+(defn wrap-newrelic [handler error-handler]
   (fn [request]
     (try
       (handler request)

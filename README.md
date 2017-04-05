@@ -42,7 +42,7 @@ The ring handler is used as follows
    :body (str "Something went wrong " (.getMessage err))})
 
 (-> handler
-    (clj-new-relic.ring/with-new-relic error-handler))
+    (clj-new-relic.ring/wrap-newrelic error-handler))
 ```
 
 ## Using the newrelic agent
