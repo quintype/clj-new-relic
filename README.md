@@ -6,7 +6,7 @@ A Clojure library designed to help trace clojure functions
 
 Add this to your Leiningen project.clj `:dependencies`:
 
-    [clj-new-relic "1.0.0"]
+    [clj-new-relic "1.2.0"]
     [com.newrelic.agent.java/newrelic-api "3.38.0"]
 
 Jar is available in Clojars.
@@ -48,6 +48,23 @@ The ring handler is used as follows
 ## Using the newrelic agent
 
 This library automatically checks for the newrelic classes at runtime. Hense, you may add new relic via the agent, and not include the dependency above
+
+## Why this library?
+
+Compared to other libraries doing similar things, here are the reasons this library exists
+
+* Completely dependency free, including on new relic. If newrelic is not loaded at macro-eval time, we juts print out a warning, and continue.
+* Support all newrelic options including `{:dispatcher true}` to start transactions
+
+## Known Issues
+
+* Functions with docstrings will not work (this will be fixed in a future edition). However, the workaround is as follows
+
+```clojure
+(defn foobar "Something great" [x] x) ; => (defn-traced ^{:doc "Something great"} foobar [x] x)
+```
+
+* If you are building an uberjar, and newrelic is not present when building the uberjar (and macros are evaluated), then newrelic will not work. This also may get fixed in a future edition
 
 ## License
 
