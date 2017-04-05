@@ -37,3 +37,7 @@
        (~invoke [_ arg1# arg2# arg3#] (f# arg1# arg2# arg3#))
        (~invoke [_ arg1# arg2# arg3# arg4#] (f# arg1# arg2# arg3# arg4#))
        (~invoke [_ arg1# arg2# arg3# arg4# more#] (apply f# arg1# arg2# arg3# arg4# more#)))))
+
+(defmacro with-agent [& body]
+  (when (class-exists? 'com.newrelic.api.agent.NewRelic)
+    `(do ~@body)))

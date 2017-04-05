@@ -17,3 +17,11 @@
 
 (defmacro defn-traced- [sym & args]
   `(defn-traced ~(vary-meta sym assoc :private true) ~@args))
+
+(defn notice-error [^Throwable e]
+  (impl/with-agent (com.newrelic.api.agent.NewRelic/noticeError e)))
+
+(defn add-custom-parameters [m]
+  (impl/with-agent
+    (doseq [[key value] m]
+      (com.newrelic.api.agent.NewRelic/addCustomParameter (str key) (str value)))))
