@@ -30,6 +30,21 @@ You can also pass in any options the tracer accepts, such as
 
 You can also annotate a private method with `defn-traced-`
 
+You can also use `notice-error` and `add-custom-parameters` for obvious purposes.
+
+## Ring
+
+The ring handler is used as follows
+
+```clojure
+(defn- error-handler [request ^Throwable err]
+  {:status 500
+   :body (str "Something went wrong " (.getMessage err))})
+
+(-> handler
+    (clj-new-relic.ring/with-new-relic error-handler))
+```
+
 ## Using the newrelic agent
 
 This library automatically checks for the newrelic classes at runtime. Hense, you may add new relic via the agent, and not include the dependency above
