@@ -1,14 +1,14 @@
 (ns clj-new-relic.core
   (:require [clj-new-relic.impl :as impl]))
 
-(defmacro defn-traced [sym & args2]
+(defmacro defn-traced [sym & args]
   (let [clazz-name (-> sym munge (str "_traced") symbol)
-        docstring? (string? (first args2))
-        docstring  (if docstring? (first args2) "")
-        args       (if docstring? (rest args2) args2)]
+        docstring? (string? (first args))
+        docstring  (if docstring? (first args) "")
+        fn-args    (if docstring? (rest args) args)]
     `(do
        (impl/define-traced-class ~clazz-name ~(assoc (-> sym meta :newrelic) :metricName (str "Clojure/" *ns* \/ sym)))
-       (let [inner-function# (fn ~sym ~@args)
+       (let [inner-function# (fn ~sym ~@fn-args)
              traced#         (new ~clazz-name inner-function#)]
          (defn ~sym
            ~docstring
