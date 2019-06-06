@@ -34,11 +34,11 @@ You can also use `notice-error` and `add-custom-parameters` for obvious purposes
 
 ### Background jobs
 
-You need to explicitly pass the option `dispatched: true` on the entry point, for it to be picked as a non-web transaction by New Relic. 
+You need to explicitly pass the option `dispatcher: true` on the entry point, for it to be picked as a non-web transaction by New Relic.
 
 ```clojure
 (clj-new-relic.core/defn-traced
-  ^{:newrelic {:dispatched true} foobar [x]
+  ^{:newrelic {:dispatcher true} foobar [x]
   (prn x))
 ```
 
